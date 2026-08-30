@@ -1,0 +1,18 @@
+node_modules/
+dist/
+dev-dist/
+*.local
+.DS_Store
+Thumbs.db
+.zcode/
+
+# 本地生成的样例书，不入库（可用 npm run sample 重新生成）
+samples/*.epub
+
+# 预装书籍（版权原因不入库，部署时手动放置，见 public/books/README.md）
+public/books/*.epub
+
+# 内置草书字体（授权信息不明确，不入库，部署时手动放置，见 public/fonts/README.md）
+public/fonts/*.ttf
+public/fonts/*.otf
+public/fonts/*.woff2
