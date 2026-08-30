@@ -9,6 +9,7 @@ import { importEpubBlob } from './importBook'
 const PRELOAD_BOOKS = [
   'books/linhanda-zhongguo-gushi.epub',
   'books/xuegang-lishi-gushi.epub',
+  'books/qianrushi-c-yuyan.epub',
 ]
 
 export async function preloadBooks(): Promise<void> {

@@ -38,6 +38,34 @@
   --font-cursive: 'CaoShuYB', system-ui, sans-serif;
 }
 
+.cursive-builtin-sgt {
+  --font-cursive: 'CaoShuSGT', system-ui, sans-serif;
+}
+
+.cursive-builtin-zdf {
+  --font-cursive: 'CaoShuZDF', system-ui, sans-serif;
+}
+
+.cursive-builtin-hczp {
+  --font-cursive: 'CaoShuHCZP', system-ui, sans-serif;
+}
+
+.cursive-builtin-bzfh {
+  --font-cursive: 'CaoShuBZFH', system-ui, sans-serif;
+}
+
+.cursive-builtin-swm {
+  --font-cursive: 'CaoShuSWM', system-ui, sans-serif;
+}
+
+.cursive-builtin-sgc {
+  --font-cursive: 'CaoShuSGC', system-ui, sans-serif;
+}
+
+.cursive-builtin-yrz {
+  --font-cursive: 'CaoShuYRZ', system-ui, sans-serif;
+}
+
 .cursive-system {
   --font-cursive: system-ui, sans-serif;
 }
@@ -536,7 +564,7 @@ button {
   border-radius: 18px;
   box-shadow: var(--shadow);
   padding: 1.6rem 1.4rem 1.3rem;
-  width: min(100%, 24rem);
+  width: min(100%, 30rem);
   text-align: center;
 }
 
@@ -572,6 +600,44 @@ button {
 .char-label {
   font-size: 0.78rem;
   color: var(--muted);
+}
+
+/* 简繁字体对比区：同一个字用简繁组全部字体渲染 */
+.font-compare {
+  margin-top: 1rem;
+  border-top: 1px solid var(--line);
+  padding-top: 0.8rem;
+}
+
+.font-compare-title {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 0.6rem;
+  text-align: left;
+}
+
+.font-compare-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.font-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.45rem 0.6rem 0.35rem;
+  min-width: 4.4rem;
+}
+
+.font-cell .char-big {
+  font-size: 2.5rem;
+  line-height: 1.15;
 }
 
 .overlay-meta {
@@ -706,6 +772,24 @@ button {
   font-size: 0.72rem;
   color: var(--muted);
   font-weight: 400;
+}
+
+.font-group-select {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.7rem;
+}
+
+.font-select {
+  flex: 1;
+  max-width: 15rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+  color: inherit;
+  font-size: 0.92rem;
+  padding: 0.5rem 0.6rem;
 }
 
 .custom-font-box {

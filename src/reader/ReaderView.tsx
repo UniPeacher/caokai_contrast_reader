@@ -398,7 +398,6 @@ export function ReaderView({ bookId, jump, settings, onSettingsChange, onBack }:
       {overlay && (
         <CharZoomOverlay
           char={overlay.char}
-          bookTitle={record?.title ?? ''}
           collected={overlayCollected}
           onCollect={() => void collectChar()}
           onClose={() => setOverlay(null)}

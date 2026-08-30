@@ -2,23 +2,13 @@ import { useCallback, useEffect, useState } from 'react'
 import type { CollectionEntry, Settings } from './types'
 import { getSettings, saveSettings } from './db'
 import { preloadBooks } from './preload'
+import { BUILTIN_FONTS, ensureFont, fontUrl } from './fonts'
 import { ShelfView } from './views/ShelfView'
 import { CollectionView } from './views/CollectionView'
 import { SettingsView } from './views/SettingsView'
 import { ReaderView } from './reader/ReaderView'
 
 type Tab = 'shelf' | 'collection' | 'settings'
-
-/** 已注册过的字体族，避免重复加载 */
-const registeredFonts = new Set<string>()
-
-async function ensureFont(family: string, url: string): Promise<void> {
-  if (registeredFonts.has(family)) return
-  const face = new FontFace(family, `url(${url})`)
-  await face.load()
-  document.fonts.add(face)
-  registeredFonts.add(family)
-}
 
 type View =
   | { name: Tab }
@@ -51,18 +41,10 @@ export default function App() {
     return () => mq.removeEventListener('change', apply)
   }, [settings?.theme])
 
-  // 草书字体：内置（简入繁出/原版）按需注册，或用户上传的自定义字体
+  // 草书字体：内置字体按需注册，或用户上传的自定义字体
   useEffect(() => {
     const src = settings?.cursiveSource
-    if (src === 'builtin-jf') {
-      ensureFont('CaoShuJF', `${import.meta.env.BASE_URL}fonts/caoshu-jf.ttf`).catch((e) =>
-        console.error('内置草书字体加载失败', e),
-      )
-    } else if (src === 'builtin-yb') {
-      ensureFont('CaoShuYB', `${import.meta.env.BASE_URL}fonts/caoshu-yb.ttf`).catch((e) =>
-        console.error('内置草书字体加载失败', e),
-      )
-    } else if (src === 'custom' && settings?.customFontBlob) {
+    if (src === 'custom' && settings?.customFontBlob) {
       void (async () => {
         try {
           const buf = await settings.customFontBlob!.arrayBuffer()
@@ -73,6 +55,14 @@ export default function App() {
           console.error('自定义字体加载失败', e)
         }
       })()
+      return
+    }
+    if (src === 'system') return
+    const def = BUILTIN_FONTS.find((f) => f.key === src)
+    if (def) {
+      ensureFont(def.family, fontUrl(def.file)).catch((e) =>
+        console.error('内置草书字体加载失败', e),
+      )
     }
   }, [settings?.cursiveSource, settings?.customFontBlob])
 

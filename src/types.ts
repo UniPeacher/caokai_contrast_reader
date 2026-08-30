@@ -9,8 +9,19 @@ export interface Settings {
   theme: ThemeMode
   /** 对照模式：toggle=点按段落切换楷书/草书；compare=段落下方显示楷书对照 */
   compareMode: CompareMode
-  /** 草书来源：内置简入繁出版（默认，简繁体都覆盖）/ 内置原版（仅繁体字形）/ 跟随系统 / 自定义上传 */
-  cursiveSource: 'builtin-jf' | 'builtin-yb' | 'system' | 'custom'
+  /** 草书来源：内置字体（简繁类：简入繁出/周东芬/汉呈张平/标准草书符号/汉仪孙万民/孙过庭草书/于右任；繁体类：原版/孙过庭书谱）/ 跟随系统 / 自定义上传 */
+  cursiveSource:
+    | 'builtin-jf'
+    | 'builtin-yb'
+    | 'builtin-sgt'
+    | 'builtin-zdf'
+    | 'builtin-hczp'
+    | 'builtin-bzfh'
+    | 'builtin-swm'
+    | 'builtin-sgc'
+    | 'builtin-yrz'
+    | 'system'
+    | 'custom'
   /** 上传的草书字体文件（ttf/otf/woff2），存 IndexedDB */
   customFontBlob?: Blob
 }

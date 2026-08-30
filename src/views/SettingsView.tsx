@@ -1,6 +1,53 @@
 import { useRef, useState } from 'react'
 import type { Settings } from '../types'
 
+/** 内置草书字体按字形分组：简繁类 / 繁体类，选中类后由下拉选具体字体 */
+const FONT_GROUPS: {
+  key: string
+  label: string
+  default: Settings['cursiveSource']
+  fonts: { value: Settings['cursiveSource']; label: string }[]
+}[] = [
+  {
+    key: 'simplified',
+    label: '内置·简繁',
+    default: 'builtin-jf',
+    fonts: [
+      { value: 'builtin-jf', label: '简入繁出' },
+      { value: 'builtin-zdf', label: '周东芬草书' },
+      { value: 'builtin-hczp', label: '汉呈张平草书' },
+      { value: 'builtin-bzfh', label: '标准草书符号' },
+      { value: 'builtin-swm', label: '汉仪孙万民草书' },
+      { value: 'builtin-sgc', label: '孙过庭草书' },
+      { value: 'builtin-yrz', label: '于右任标准草书' },
+    ],
+  },
+  {
+    key: 'traditional',
+    label: '内置·繁体',
+    default: 'builtin-yb',
+    fonts: [
+      { value: 'builtin-yb', label: '原版' },
+      { value: 'builtin-sgt', label: '孙过庭书谱' },
+    ],
+  },
+]
+
+function fontGroupOf(source: Settings['cursiveSource']): string | null {
+  if (
+    source === 'builtin-jf' ||
+    source === 'builtin-zdf' ||
+    source === 'builtin-hczp' ||
+    source === 'builtin-bzfh' ||
+    source === 'builtin-swm' ||
+    source === 'builtin-sgc' ||
+    source === 'builtin-yrz'
+  )
+    return 'simplified'
+  if (source === 'builtin-yb' || source === 'builtin-sgt') return 'traditional'
+  return null
+}
+
 interface SettingsViewProps {
   settings: Settings
   onChange: (patch: Partial<Settings>) => void
@@ -72,19 +119,52 @@ export function SettingsView({ settings, onChange }: SettingsViewProps) {
       <section className="setting-group">
         <h3>草书字体</h3>
         <p className="setting-hint">
-          默认使用内置的「草书 1.00（简入繁出）」：简体繁体字形都覆盖，读简体书推荐用它；
-          「原版」只含繁体字形，适合读繁体书；也可以改回跟随手机系统字体，或上传自己的字体文件。
+          内置草书字体按字形分为「简繁」（简入繁出、周东芬草书）和「繁体」（原版、孙过庭书谱）两类，
+          选中类别后用下拉选择具体字体；也可以跟随手机系统字体，或上传自己的字体文件。
         </p>
-        <Segmented
-          value={settings.cursiveSource}
-          onChange={(v) => onChange({ cursiveSource: v })}
-          options={[
-            { value: 'builtin-jf', label: '内置·简入繁出', hint: '推荐' },
-            { value: 'builtin-yb', label: '内置·原版', hint: '仅繁体字形' },
-            { value: 'system', label: '跟随系统' },
-            { value: 'custom', label: '自定义上传' },
-          ]}
-        />
+        <div className="segmented">
+          {FONT_GROUPS.map((g) => (
+            <button
+              key={g.key}
+              className={fontGroupOf(settings.cursiveSource) === g.key ? 'seg-btn active' : 'seg-btn'}
+              onClick={() =>
+                onChange({
+                  cursiveSource: fontGroupOf(settings.cursiveSource) === g.key ? settings.cursiveSource : g.default,
+                })
+              }
+            >
+              {g.label}
+            </button>
+          ))}
+          <button
+            className={settings.cursiveSource === 'system' ? 'seg-btn active' : 'seg-btn'}
+            onClick={() => onChange({ cursiveSource: 'system' })}
+          >
+            跟随系统
+          </button>
+          <button
+            className={settings.cursiveSource === 'custom' ? 'seg-btn active' : 'seg-btn'}
+            onClick={() => onChange({ cursiveSource: 'custom' })}
+          >
+            自定义上传
+          </button>
+        </div>
+        {fontGroupOf(settings.cursiveSource) && (
+          <div className="font-group-select">
+            <select
+              className="font-select"
+              value={settings.cursiveSource}
+              onChange={(e) => onChange({ cursiveSource: e.target.value as Settings['cursiveSource'] })}
+            >
+              {FONT_GROUPS.find((g) => g.key === fontGroupOf(settings.cursiveSource))!.fonts.map((f) => (
+                <option key={f.value} value={f.value}>
+                  {f.label}
+                </option>
+              ))}
+            </select>
+            <span className="setting-hint">选择该类别下的具体字体</span>
+          </div>
+        )}
         {settings.cursiveSource === 'custom' && (
           <div className="custom-font-box">
             <input
