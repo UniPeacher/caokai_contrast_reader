@@ -11,7 +11,7 @@ const SKIP_TAGS = [
   'script', 'style', 'link', 'meta', 'title', 'head', 'base', 'noscript',
   'iframe', 'frame', 'object', 'embed', 'video', 'audio', 'source', 'track',
   'svg', 'canvas', 'map', 'area', 'form', 'input', 'button', 'select',
-  'textarea', 'option', 'aside', 'nav',
+  'textarea', 'option', 'aside', 'nav', 'template',
 ]
 
 const BLOCK_TAGS = new Set([
@@ -67,15 +67,13 @@ export async function renderChapter(
   const body = doc.body
 
   // 1. 删除无关节点
-  const skipSelector = SKIP_TAGS.map((t) => t).join(',')
-  body.querySelectorAll(skipSelector).forEach((el) => el.remove())
+  body.querySelectorAll(SKIP_TAGS.join(',')).forEach((el) => el.remove())
 
   // 2. 游离行内内容包进段落
   wrapStrayContent(doc, body)
 
   // 3. 剥离属性（保留 src/alt/跨行列）
   body.querySelectorAll('*').forEach((el) => {
-    if (el.tagName === 'A') el.removeAttribute('href')
     for (const attr of Array.from(el.attributes)) {
       if (!KEEP_ATTRS.has(attr.name)) el.removeAttribute(attr.name)
     }
@@ -92,7 +90,6 @@ export async function renderChapter(
     const text = el.textContent?.trim() ?? ''
     if (text) {
       el.setAttribute('data-pi', String(paraIndex))
-      el.classList.add('para')
       paraIndex++
     }
   }
@@ -103,7 +100,7 @@ export async function renderChapter(
   await Promise.all(
     imgs.map(async (img) => {
       const src = img.getAttribute('src')
-      if (!src || src.startsWith('data:')) return
+      if (!src || src.startsWith('data:image/')) return
       try {
         const blob = await resolveImage(src)
         if (blob) {

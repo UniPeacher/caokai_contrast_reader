@@ -184,7 +184,6 @@ export function ReaderView({ bookId, jump, settings, onSettingsChange, onBack }:
       for (const url of blobUrlsRef.current) URL.revokeObjectURL(url)
       blobUrlsRef.current = []
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookId])
 
   // ---------- 章节渲染完成后：恢复位置 / 跳转高亮 ----------

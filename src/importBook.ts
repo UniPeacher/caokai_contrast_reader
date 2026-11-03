@@ -19,7 +19,8 @@ export async function importEpubBlob(blob: Blob, fixedId?: string): Promise<Book
     title: parsed.title,
     author: parsed.author,
     cover: parsed.cover,
-    epub: new Blob([buf], { type: 'application/epub+zip' }),
+    // 直接存原始 Blob（slice 仅规范化 MIME，不复制数据），避免导入峰值内存翻倍
+    epub: blob.type === 'application/epub+zip' ? blob : blob.slice(0, blob.size, 'application/epub+zip'),
     spineCount: parsed.spine.length,
     addedAt: Date.now(),
   }
