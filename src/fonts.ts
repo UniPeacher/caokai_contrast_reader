@@ -28,6 +28,16 @@ export const BUILTIN_FONTS: FontDef[] = [
 /** 简繁组字体（放大对比时使用） */
 export const SIMPLIFIED_FONTS = BUILTIN_FONTS.filter((f) => f.group === 'simplified')
 
+/** 放大视图对照用的篆书字体（独立于草书分组） */
+export const ZHUAN_FONT = {
+  family: 'YiShanBeiZhuan',
+  file: 'zhuan-yishanbei.ttf',
+  label: '峄山碑篆体',
+  // 该字体 descent 声明虚报（-1.6% 但实际字形到 -30.8%），用 override 纠正，避免字形整体偏下
+  ascentOverride: '84%',
+  descentOverride: '31%',
+}
+
 export function fontUrl(file: string): string {
   return `${BASE}fonts/${file}`
 }
@@ -35,9 +45,13 @@ export function fontUrl(file: string): string {
 /** 已注册过的字体族，避免重复加载 */
 const registeredFonts = new Set<string>()
 
-export async function ensureFont(family: string, url: string): Promise<void> {
+export async function ensureFont(
+  family: string,
+  url: string,
+  descriptors?: FontFaceDescriptors,
+): Promise<void> {
   if (registeredFonts.has(family)) return
-  const face = new FontFace(family, `url(${url})`)
+  const face = new FontFace(family, `url(${url})`, descriptors)
   await face.load()
   document.fonts.add(face)
   registeredFonts.add(family)
